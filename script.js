@@ -5,8 +5,8 @@
 'use strict';
 
 //Ширина браузера
-function widthClient(item) {
-    var widthVar = item.clientWidth; //размер с padding & border
+function widthClient(element) {
+    var widthVar = element.clientWidth; //размер с padding & border
     return widthVar;
 }
 
@@ -68,12 +68,68 @@ function createMatrix() {
             xDiv.style.width = sizeCell + "px";
             xDiv.style.height = sizeCell + "px";
             xDiv.className = 'cell';
-            xDiv.id = 'yx'+ iRow + '_'+iCol;
+            xDiv.id = 'yx' + iRow + '_' + iCol;
             yDiv.appendChild(xDiv);
         }
     }
 
     return matrix;
+}
+
+//Установка начальной и конечной ячейки
+function cellBeginEnd(divEvent, arr) {
+    var idElement;
+
+    divEvent.onmouseover = function (event) {
+        var target = event.target;
+
+        target.style.background = 'black';
+    };
+
+    divEvent.onmouseout = function (event) {
+        var target = event.target;
+
+        target.style.background = '';
+    };
+
+    var alternation = false;    //переменная для чередования цвета ячеек
+    var countCell = 0;          //переменная выделенных ячеек
+    divEvent.onmousedown = function (event) {
+        var target = event.target;
+        idElement = target.id;
+        if (!alternation) {
+            target.className = 'cell-begin';
+            alternation = true;
+            ++countCell;
+            arr.push(idElement);
+        } else {
+            target.className = 'cell-end';
+            alternation = false;
+            ++countCell;
+            arr.push(idElement);
+        }
+        console.log('arr = ' + arr);
+    }
+
+    divEvent.onmouseup = function (event) {
+        var target = event.target;
+
+        if (countCell == 2) {
+            target.style.background = '';
+            divEvent.onmouseover = null;
+            divEvent.onmouseout = null;
+            divEvent.onmousedown = null;
+        }
+    }
+}
+
+//Обнуление действий на мыше
+function resetOption() {
+    var matrix = document.getElementById('matrix');
+    matrix.onmouseover =null;
+    matrix.onmouseout =null;
+    matrix.onmousedown =null;
+    matrix.onmouseup =null;
 }
 
 // Чтение ячейки матрицы.
@@ -94,22 +150,22 @@ function setCell(row, col, val) {
 // Точка входа
 window.onload = function () {
     var divEvent = createMatrix();
-    var idIner;
+    var arrCell = [];
+    var idElement = cellBeginEnd(divEvent, arrCell);
 
-    divEvent.onmouseover = function (event) {
-        var target = event.target;
-        target.style.background = 'pink';
-        idIner = target.id;
-        console.log('idIner='+idIner);
-
-    };
-
-    divEvent.onmouseout = function (event) {
-        var target = event.target;
-        target.style.background = '';
-    };
-
+    if (arrCell.length == 2) {
+        console.log('arrCell = ' + arrCell);
+    }
 
     setCell(1, 1, true);
 
-}				
+}
+
+function beginGame() {
+    resetOption();
+}
+
+function reset() {
+    
+}
+

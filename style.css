@@ -7,10 +7,12 @@
 	border: 1px solid #252525;
 }
 
-.cell-hover {
+.cell-begin {
 	background: #15982f; /* Цвет фона клетки под курсором */
 }
 
-.td {
-	border: 1px solid #252525;
+.cell-end {
+	background: #980104; /* Цвет фона клетки под курсором */
 }
+
+
