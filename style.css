@@ -1,6 +1,6 @@
 #matrix {
 	background: #8a9098; /* Цвет фона */
-	border: 4px solid #030f99;
+	border: 4px solid #0417ff;
 }
 
 .cell {
@@ -8,11 +8,22 @@
 }
 
 .cell-begin {
-	background: #15982f; /* Цвет фона клетки под курсором */
+	background: #24ff4e; /* Цвет фона клетки под курсором */
 }
 
 .cell-end {
-	background: #980104; /* Цвет фона клетки под курсором */
+	background: #ff0104; /* Цвет фона клетки под курсором */
+}
+
+.snake {
+	background: #ff8d07; /* Цвет фона клетки под курсором */
+}
+
+.snake-victory-1 {
+	background: #33ff03; /* Цвет фона клетки под курсором */
+}
+.snake-victory-2 {
+	background: #0820ff; /* Цвет фона клетки под курсором */
 }
 
 
