@@ -15,17 +15,64 @@
 	background: #ff0104; /* Цвет фона клетки под курсором */
 }
 
+.snake-head {
+	background: url("/img/snake.png") no-repeat;
+	background-size: 100%;
+}
+
+.snake-head-left {
+	border-radius: 50px 0 0 50px
+}
+
+.snake-head-right {
+	border-radius: 0 50px 50px 0
+}
+
+.snake-head-up {
+	border-radius: 50px 50px 0 0
+}
+
+.snake-head-down {
+	border-radius: 0 0 50px 50px
+}
+
+/*.snake-head{
+	background: url("/img/snakeHead.png") no-repeat;
+	background-size: 100%;
+}
+
+.snake-head-left{
+	transform: scale(-1, 1);
+	background-position: left center;
+}
+
+.snake-head-right{
+	transform: rotate(0deg);
+	background-position: right center;
+}
+.snake-head-up{
+	transform: rotate(270deg);
+	background-position: center center ;
+}
+.snake-head-down{
+	transform: rotate(90deg);
+	background-position: center center ;
+}*/
+
 .snake {
-	background: #ff8d07; /* Цвет фона клетки под курсором */
+	background-image: url("/img/snake.png");
+	background-size: 100%;
 }
 
 .snake-grow {
-	background: #00ffe6; /* Цвет фона клетки под курсором */
+	background-image: url("/img/mause.png");
+	background-size: 100%;
 }
 
 .snake-victory-1 {
 	background: #396a31; /* Цвет фона клетки под курсором */
 }
+
 .snake-victory-2 {
 	background: #464e9b; /* Цвет фона клетки под курсором */
 }

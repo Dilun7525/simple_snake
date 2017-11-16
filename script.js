@@ -4,7 +4,7 @@
 * */
 'use strict';
 let ObgMAtrix = {
-    n: 3,          //размер матрицы
+    n: 10,          //размер матрицы
     arrCell: [],    //координаты начала и конца
     arrAllCell: [], //координаты всех ячеек
     element: null,  //Объект с отслеживаемыми событиями
@@ -17,12 +17,28 @@ const KEY_CODE = {
     DOWN: 40
 };
 
+const ROTATE_HEAD = {
+    LEFT: 'snake-head snake-head-left',
+    UP: 'snake-head snake-head-up',
+    RIGHT: 'snake-head snake-head-right',
+    DOWN: 'snake-head snake-head-down'
+};
+const ROTATE_BODY = {
+    LEFT: 'snake snake-head-left',
+    UP: 'snake snake-head-up',
+    RIGHT: 'snake snake-head-right',
+    DOWN: 'snake snake-head-down',
+    DEFAULT: 'snake',
+};
+
 let Snake = {
     arrBody: [],        //координаты тела змеи
     sizePlace: 0,       //размер свободного места
     cellGrow: null,     //ячейка роста змеи
-
-    arrPlace: [],       //координаты тела змеи
+    speedSnake: 200,    //Скорость змея
+    intervalMove: null, //относится к скорости
+    rotateHead: ROTATE_HEAD.RIGHT, //поворот головы
+    rotateNeck: ROTATE_BODY.DEFAULT, //поворот шеи
 }
 
 //Ширина браузера
@@ -176,9 +192,18 @@ function rundomCell() {
 
 //Рост змеи
 function growSnake(str) {
+
+
+    let div;
+    //Формирование головы
+    let head = Snake.arrBody.length - 1;
+    div = document.getElementById(Snake.arrBody[head]);
+    div.className = Snake.rotateNeck;
+
     Snake.arrBody.push(str);
-    let div = document.getElementById(str);
-    div.className = 'snake';
+    div = document.getElementById(Snake.arrBody[head + 1]);
+    div.className = Snake.rotateHead;
+
 
     //Проверка достижения конца
     if (Snake.sizePlace === 1) {
@@ -240,61 +265,84 @@ function pathSnake(keyCode) {
     let x = arrCoordinates[0];
     let y = arrCoordinates[1];
     let n = ObgMAtrix.n;
+    //Установка шеи
+    Snake.arrBody
 
 
-    //Получение координат будующей клетки
-    switch (keyCode) {
-        case KEY_CODE.RIGHT:
-            ++x;
-            break;
-        case KEY_CODE.LEFT:
-            --x;
-            break;
-        case KEY_CODE.UP:
-            --y;
-            break;
-        case KEY_CODE.DOWN:
-            ++y;
-            break;
+    if (Snake.intervalMove !== null) {
+        clearInterval(Snake.intervalMove);
     }
 
-    let str = x + "_" + y;
-    let boolCell = false; //переменная для разрешения двигаться дальше
+    Snake.intervalMove = setInterval(function () {
 
-    //Проверка будущей клетки(можно ли зайти)
-    if ((x >= 0 && x < n) && (y >= 0 && y < n)) {
-        for (let i = 0; i < arrPathLength; i++) {
-            if (Snake.arrBody[i] !== str) {
-                boolCell = true;
+
+            //Получение координат будующей клетки
+            switch (keyCode) {
+                case KEY_CODE.RIGHT:
+                    ++x;
+                    break;
+                case KEY_CODE.LEFT:
+                    --x;
+                    break;
+                case KEY_CODE.UP:
+                    --y;
+                    break;
+                case KEY_CODE.DOWN:
+                    ++y;
+                    break;
+            }
+
+            let str = x + "_" + y;
+            let boolCell = false; //переменная для разрешения двигаться дальше
+
+            //Проверка будущей клетки(можно ли зайти)
+            if ((x >= 0 && x < n) && (y >= 0 && y < n)) {
+                for (let i = 0; i < arrPathLength; i++) {
+                    if (Snake.arrBody[i] !== str) {
+                        boolCell = true;
+                    } else {
+                        boolCell = false;
+                        break;
+                    }
+                }
             } else {
                 boolCell = false;
-                break;
             }
-        }
-    } else {
-        boolCell = false;
-    }
-    // Положительно двежение дальше
-    if (boolCell) {
-        growSnake(str);
-    } else {// Отрицательно двежение дальше
-        window.removeEventListener('keydown', handler);
-        alert("Проигрыш");
-    }
+            // Положительно движение дальше
+            if (boolCell) {
+                growSnake(str);
+            } else {// Отрицательно двежение дальше
+                clearInterval(Snake.intervalMove);
+                window.removeEventListener('keydown', handler);
+                alert("Проигрыш");
+            }
+
+
+        },
+        Snake.speedSnake
+    );
+
+
 }
 
 function handler(event) {
+
+
     switch (event.keyCode) {
         case KEY_CODE.RIGHT:
+            Snake.rotateHead = ROTATE_HEAD.RIGHT;
             pathSnake(KEY_CODE.RIGHT);
             break;
         case KEY_CODE.LEFT:
+            Snake.rotateHead = ROTATE_HEAD.LEFT;
             pathSnake(KEY_CODE.LEFT);
             break;
         case KEY_CODE.UP:
+            Snake.rotateHead = ROTATE_HEAD.UP;
             pathSnake(KEY_CODE.UP);
             break;
         case KEY_CODE.DOWN:
+            Snake.rotateHead = ROTATE_HEAD.DOWN;
             pathSnake(KEY_CODE.DOWN);
             break;
     }
@@ -319,7 +367,7 @@ function game() {
     // инициализация массива тела змеи координатами начала пути
     if (Snake.arrBody.length === 0) {
         Snake.arrBody.push(rundomCell());
-        document.getElementById(Snake.arrBody[0]).className = 'snake';
+        document.getElementById(Snake.arrBody[0]).className = ROTATE_HEAD.RIGHT;
 
     }
     // инициализация первой клетки увеличения змеи
