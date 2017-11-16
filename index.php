@@ -19,10 +19,7 @@
 	<div class="row">
 		<div class="col-1"></div>
 		<div class="col justify-content-center">
-			<div >
-				<input id="btnBegin" class="btn btn-dark" type="button" value="Начать игру" onclick="beginGame()">
-				<input id="btnReset" class="btn btn-dark" type="button" value="Сброс" onclick="reset()">
-			</div>
+
 			<div id="matrix">
 
 			</div>
