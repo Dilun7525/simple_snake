@@ -36,6 +36,48 @@
 	border-radius: 0 0 50px 50px
 }
 
+.snake-neck {
+	background: url("/img/snake.png") no-repeat;
+	background-size: 100%;
+}
+
+.snake-snake-neck-left {
+	border-radius: 50px 0 0 50px
+}
+
+.snake-snake-neck-right {
+	border-radius: 0 50px 50px 0
+}
+
+.snake-snake-neck-up {
+	border-radius: 50px 50px 0 0
+}
+
+.snake-snake-neck-down {
+	border-radius: 0 0 50px 50px
+}
+
+.snake-body {
+	background: url("/img/snake.png") no-repeat;
+	background-size: 100%;
+}
+
+.snake-snake-body-left {
+	border-radius: 50px 0 0 50px
+}
+
+.snake-snake-body-right {
+	border-radius: 0 50px 50px 0
+}
+
+.snake-snake-body-up {
+	border-radius: 50px 50px 0 0
+}
+
+.snake-snake-body-down {
+	border-radius: 0 0 50px 50px
+}
+
 /*.snake-head{
 	background: url("/img/snakeHead.png") no-repeat;
 	background-size: 100%;

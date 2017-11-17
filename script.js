@@ -18,16 +18,23 @@ const KEY_CODE = {
 };
 
 const ROTATE_HEAD = {
-    LEFT: 'snake-head snake-head-left',
-    UP: 'snake-head snake-head-up',
-    RIGHT: 'snake-head snake-head-right',
-    DOWN: 'snake-head snake-head-down'
+    LEFT:    'snake-head snake-head-left',
+    UP:      'snake-head snake-head-up',
+    RIGHT:   'snake-head snake-head-right',
+    DOWN:    'snake-head snake-head-down'
+};
+const ROTATE_NECK = {
+    LEFT:    'snake-neck snake-neck-left',
+    UP:      'snake-neck snake-neck-up',
+    RIGHT:   'snake-neck snake-neck-right',
+    DOWN:    'snake-neck snake-neck-down',
+    DEFAULT: 'snake-neck',
 };
 const ROTATE_BODY = {
-    LEFT: 'snake snake-head-left',
-    UP: 'snake snake-head-up',
-    RIGHT: 'snake snake-head-right',
-    DOWN: 'snake snake-head-down',
+    LEFT:    'snake-body snake-body-left',
+    UP:      'snake-body snake-body-up',
+    RIGHT:   'snake-body snake-body-right',
+    DOWN:    'snake-body snake-body-down',
     DEFAULT: 'snake',
 };
 
@@ -37,8 +44,12 @@ let Snake = {
     cellGrow: null,     //ячейка роста змеи
     speedSnake: 200,    //Скорость змея
     intervalMove: null, //относится к скорости
-    rotateHead: ROTATE_HEAD.RIGHT, //поворот головы
-    rotateNeck: ROTATE_BODY.DEFAULT, //поворот шеи
+    rotation: {
+        head: ROTATE_HEAD.RIGHT,
+        neck: ROTATE_NECK.DEFAULT,
+        body: ROTATE_BODY.DEFAULT,
+        bool: false,
+    },
 }
 
 //Ширина браузера
@@ -198,11 +209,17 @@ function growSnake(str) {
     //Формирование головы
     let head = Snake.arrBody.length - 1;
     div = document.getElementById(Snake.arrBody[head]);
-    div.className = Snake.rotateNeck;
+    //Произошел поворот
+    if(Snake.rotation['bool']){
+        div.className = Snake.rotation['neck'];
+        Snake.rotation['bool']=false;
+    }else{
+        div.className = Snake.rotation['body'];
+    }
 
     Snake.arrBody.push(str);
     div = document.getElementById(Snake.arrBody[head + 1]);
-    div.className = Snake.rotateHead;
+    div.className = Snake.rotation['head'];
 
 
     //Проверка достижения конца
@@ -265,9 +282,6 @@ function pathSnake(keyCode) {
     let x = arrCoordinates[0];
     let y = arrCoordinates[1];
     let n = ObgMAtrix.n;
-    //Установка шеи
-    Snake.arrBody
-
 
     if (Snake.intervalMove !== null) {
         clearInterval(Snake.intervalMove);
@@ -330,19 +344,31 @@ function handler(event) {
 
     switch (event.keyCode) {
         case KEY_CODE.RIGHT:
-            Snake.rotateHead = ROTATE_HEAD.RIGHT;
+            Snake.rotation['head'] = ROTATE_HEAD.RIGHT;
+            Snake.rotation['neck'] = ROTATE_NECK.RIGHT;
+            Snake.rotation['body'] = ROTATE_BODY.RIGHT;
+            Snake.rotation['bool'] = true;
             pathSnake(KEY_CODE.RIGHT);
             break;
         case KEY_CODE.LEFT:
-            Snake.rotateHead = ROTATE_HEAD.LEFT;
+            Snake.rotation['head'] = ROTATE_HEAD.LEFT;
+            Snake.rotation['neck'] = ROTATE_NECK.LEFT;
+            Snake.rotation['body'] = ROTATE_BODY.LEFT;
+            Snake.rotation['bool'] = true;
             pathSnake(KEY_CODE.LEFT);
             break;
         case KEY_CODE.UP:
-            Snake.rotateHead = ROTATE_HEAD.UP;
+            Snake.rotation['head'] = ROTATE_HEAD.UP;
+            Snake.rotation['neck'] = ROTATE_NECK.UP;
+            Snake.rotation['body'] = ROTATE_BODY.UP;
+            Snake.rotation['bool'] = true;
             pathSnake(KEY_CODE.UP);
             break;
         case KEY_CODE.DOWN:
-            Snake.rotateHead = ROTATE_HEAD.DOWN;
+            Snake.rotation['head'] = ROTATE_HEAD.DOWN;
+            Snake.rotation['neck'] = ROTATE_NECK.DOWN;
+            Snake.rotation['body'] = ROTATE_BODY.DOWN;
+            Snake.rotation['bool'] = true;
             pathSnake(KEY_CODE.DOWN);
             break;
     }
