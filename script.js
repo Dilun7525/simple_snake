@@ -37,11 +37,12 @@ const ROT_BODY = {
     DOWN: 'snake-body snake-tr-r90',
 };
 const COMPLEX = {
-    EASY: 'easy',
-    MIDDLE: 'middle',
-    HARD: 'hard',
-    VHARD: 'very Hard',
+    EASY: 'легкая',
+    MIDDLE: 'средняя',
+    HARD: 'сложная',
+    VHARD: 'очень сложная',
 };
+
 let idDiv = {
     sizeMatrix: null,
     complexity: null,
@@ -60,6 +61,15 @@ let dateGame = {
     addPoint: 5,
     limitPoint: 50,
     complexity: COMPLEX.MIDDLE,
+    speedEasy:500,
+    addSpeedEasy:50,
+    speedMiddle:400,
+    addSpeedMiddle:40,
+    speedHard:300,
+    addSpeedHard:30,
+    speedVHard:200,
+    addSpeedVHard:20,
+
 };
 
 let Snake = {
@@ -417,7 +427,6 @@ function pathSnake(keyCode) {
                 printGame();
             }
 
-
         },
         Snake.speed
     );
@@ -471,25 +480,26 @@ function initialization() {
     //initialization
     dateGame.complexity = (idDiv.complexity).value;
     ObgMatrix.n = parseInt((idDiv.sizeMatrix).value);
-
     switch (dateGame.complexity) {
         case COMPLEX.EASY:
-            Snake.speed = 700;
-            Snake.addSpeed = 50;
+            Snake.speed = dateGame.speedEasy;
+            Snake.addSpeed = dateGame.addSpeedEasy;
             break;
         case COMPLEX.MIDDLE:
-            Snake.speed = 500;
-            Snake.addSpeed = 40;
+            Snake.speed = dateGame.speedMiddle;
+            Snake.addSpeed = dateGame.addSpeedMiddle;
             break;
         case COMPLEX.HARD:
-            Snake.speed = 350;
-            Snake.addSpeed = 30;
+            Snake.speed = dateGame.speedHard;
+            Snake.addSpeed = dateGame.addSpeedHard;
             break;
         case COMPLEX.VHARD:
-            Snake.speed = 200;
-            Snake.addSpeed = 20;
+            Snake.speed = dateGame.speedVHard;
+            Snake.addSpeed = dateGame.addSpeedVHard;
             break;
     }
+    idDiv.pointVictory.value = 0;
+    idDiv.speed.value = Snake.speed;
 }
 
 function game() {
@@ -523,13 +533,22 @@ function game() {
     window.addEventListener('keydown', handler);
 }
 
+function beginGame(){
+    initialization();
+    createMatrix();
+    game();
+}
+
+function reload() {
+location.reload();
+}
+
 //endregion
 // Точка входа
 window.onload = function () {
     initialization();
 
-    createMatrix();
-    game();
 }
+
 
 

@@ -21,15 +21,19 @@
 			<div class="row">
 				<label for="complexity">Сложность: </label>
 				<select id="complexity" class="form-control">
-					<option value="easy">Easy</option>
-					<option value="middle" selected>Middle</option>
-					<option value="hard">Hard</option>
-					<option value="very hard">Very Hard</option>
+					<option value="легкая">легкая</option>
+					<option value="средняя" selected>средняя</option>
+					<option value="сложная">сложная</option>
+					<option value="очень сложная">очень сложная</option>
 				</select>
 			</div>
 			<div class="row">
 				<label for="sizeMatrix">Размер поля:</label>
 				<input type="number" class="form-control" id="sizeMatrix">
+			</div>
+			<div class="row">
+				<input id="btnBegin" class="btn btn-dark" type="button" value="Начать" onclick="beginGame()">
+				<input id="btnReload" class="btn btn-dark" type="button" value="Сбросить" onclick="reload()">
 			</div>
 
 
