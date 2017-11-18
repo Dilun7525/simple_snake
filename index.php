@@ -17,7 +17,21 @@
 <div class="container">
 
 	<div class="row">
-		<div class="col-1 justify-content-center">
+		<div class="col-2 justify-content-center">
+			<div class="row">
+				<label for="complexity">Сложность: </label>
+				<select id="complexity" class="form-control">
+					<option value="easy">Easy</option>
+					<option value="middle" selected>Middle</option>
+					<option value="hard">Hard</option>
+					<option value="very hard">Very Hard</option>
+				</select>
+			</div>
+			<div class="row">
+				<label for="sizeMatrix">Размер поля:</label>
+				<input type="number" class="form-control" id="sizeMatrix">
+			</div>
+
 
 		</div>
 		<div class="col justify-content-center">
@@ -26,7 +40,16 @@
 
 			</div>
 		</div>
-		<div class="col-1"></div>
+		<div class="col-2">
+			<div class="row">
+				<label for="pointVictory">Очки:</label>
+				<input type="text" class="form-control" id="pointVictory" value="0">
+			</div>
+			<div class="row">
+				<label for="speed">Скорость:</label>
+				<input type="text" class="form-control" id="speed" value="0">
+			</div>
+		</div>
 	</div>
 
 </div>

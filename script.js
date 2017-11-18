@@ -36,12 +36,30 @@ const ROT_BODY = {
     RIGHT: 'snake-body snake-tr-r0',
     DOWN: 'snake-body snake-tr-r90',
 };
-
+const COMPLEX = {
+    EASY: 'easy',
+    MIDDLE: 'middle',
+    HARD: 'hard',
+    VHARD: 'very Hard',
+};
+let idDiv = {
+    sizeMatrix: null,
+    complexity: null,
+    pointVictory: null,
+    speed: null,
+};
 let ObgMatrix = {
-    n: 20,          //размер матрицы
+    n: 10,          //размер матрицы
     arrCell: [],    //координаты начала и конца
     arrAllCell: [], //координаты всех ячеек
     element: null   //Объект с отслеживаемыми событиями
+};
+
+let dateGame = {
+    point: 0,
+    addPoint: 5,
+    limitPoint: 50,
+    complexity: COMPLEX.MIDDLE,
 };
 
 let Snake = {
@@ -265,9 +283,10 @@ function growSnake(str) {
     div = document.getElementById(Snake.arrBody[head]);
     //Произошел поворот
     if (Snake.rot.bool) {
+        Snake.rot.bool = false;
         twistNeck();
         div.className = Snake.rot.neck;
-        Snake.rot.bool = false;
+
     } else {
         div.className = Snake.rot.body;
     }
@@ -287,6 +306,14 @@ function growSnake(str) {
         if (Snake.cellGrow === str) {
             Snake.cellGrow = rundomCell();
             document.getElementById(Snake.cellGrow).className = 'snake-grow';
+            //механизм подсчета очков и скорости
+            dateGame.point += dateGame.addPoint;
+            (idDiv.pointVictory).value = dateGame.point;
+            if (dateGame.point % dateGame.limitPoint === 0) {
+                Snake.speed -=Snake.addSpeed;
+            }
+            idDiv.speed.value = Snake.speed;
+
 
         } else {
             div = document.getElementById(Snake.arrBody[0]);
@@ -298,6 +325,10 @@ function growSnake(str) {
 
 }
 
+function printGame() {
+    alert("Вы заработали= "+ dateGame.point + "\n"+
+        "на сложности: "+ dateGame.complexity);
+}
 
 //Достижение конца игры
 function endGame() {
@@ -383,7 +414,7 @@ function pathSnake(keyCode) {
             } else {// Отрицательно двежение дальше
                 clearInterval(Snake.intervalMove);
                 window.removeEventListener('keydown', handler);
-                alert("Проигрыш");
+                printGame();
             }
 
 
@@ -394,6 +425,7 @@ function pathSnake(keyCode) {
 
 }
 
+//Обработчик к слушателю кнопок
 function handler(event) {
 
     switch (event.keyCode) {
@@ -428,6 +460,37 @@ function handler(event) {
     }
 }
 
+function initialization() {
+    let div;
+    //id Elements
+    idDiv.complexity = document.getElementById('complexity');
+    idDiv.sizeMatrix = document.getElementById('sizeMatrix');
+    idDiv.pointVictory = document.getElementById('pointVictory');
+    idDiv.speed = document.getElementById('speed');
+
+    //initialization
+    dateGame.complexity = (idDiv.complexity).value;
+    ObgMatrix.n = parseInt((idDiv.sizeMatrix).value);
+
+    switch (dateGame.complexity) {
+        case COMPLEX.EASY:
+            Snake.speed = 700;
+            Snake.addSpeed = 50;
+            break;
+        case COMPLEX.MIDDLE:
+            Snake.speed = 500;
+            Snake.addSpeed = 40;
+            break;
+        case COMPLEX.HARD:
+            Snake.speed = 350;
+            Snake.addSpeed = 30;
+            break;
+        case COMPLEX.VHARD:
+            Snake.speed = 200;
+            Snake.addSpeed = 20;
+            break;
+    }
+}
 
 function game() {
     console.log("game run");
@@ -463,6 +526,8 @@ function game() {
 //endregion
 // Точка входа
 window.onload = function () {
+    initialization();
+
     createMatrix();
     game();
 }
