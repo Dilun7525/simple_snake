@@ -1,109 +1,56 @@
 #matrix {
-	background: #8a9098; /* Цвет фона */
+	background: #509846; /* Цвет фона */
 	border: 4px solid #0417ff;
 }
 
 .cell {
-	border: 1px solid #252525;
+	border: 0px solid #252525;
 }
-
 .cell-begin {
 	background: #24ff4e; /* Цвет фона клетки под курсором */
 }
-
 .cell-end {
 	background: #ff0104; /* Цвет фона клетки под курсором */
 }
 
-.snake-head {
-	background: url("/img/snake.png") no-repeat;
-	background-size: 100%;
-}
-
-.snake-head-left {
-	border-radius: 50px 0 0 50px
-}
-
-.snake-head-right {
-	border-radius: 0 50px 50px 0
-}
-
-.snake-head-up {
-	border-radius: 50px 50px 0 0
-}
-
-.snake-head-down {
-	border-radius: 0 0 50px 50px
-}
-
-.snake-neck {
-	background: url("/img/snake.png") no-repeat;
-	background-size: 100%;
-}
-
-.snake-snake-neck-left {
-	border-radius: 50px 0 0 50px
-}
-
-.snake-snake-neck-right {
-	border-radius: 0 50px 50px 0
-}
-
-.snake-snake-neck-up {
-	border-radius: 50px 50px 0 0
-}
-
-.snake-snake-neck-down {
-	border-radius: 0 0 50px 50px
-}
-
-.snake-body {
-	background: url("/img/snake.png") no-repeat;
-	background-size: 100%;
-}
-
-.snake-snake-body-left {
-	border-radius: 50px 0 0 50px
-}
-
-.snake-snake-body-right {
-	border-radius: 0 50px 50px 0
-}
-
-.snake-snake-body-up {
-	border-radius: 50px 50px 0 0
-}
-
-.snake-snake-body-down {
-	border-radius: 0 0 50px 50px
-}
-
-/*.snake-head{
+.snake-head{
 	background: url("/img/snakeHead.png") no-repeat;
 	background-size: 100%;
 }
+.snake-body {
+	background: url("/img/snakeBody.png") no-repeat;
+	background-size: 100%;
+}
+.snake-neck {
+	background: url("/img/snakeNeck.png") no-repeat;
+	background-size: 100%;
+}
 
-.snake-head-left{
+.snake-tr-h{
 	transform: scale(-1, 1);
 	background-position: left center;
 }
-
-.snake-head-right{
+.snake-tr-v{
+	transform: scale(1, -1);
+	background-position: left center;
+}
+.snake-tr-r0{
 	transform: rotate(0deg);
 	background-position: right center;
 }
-.snake-head-up{
-	transform: rotate(270deg);
-	background-position: center center ;
-}
-.snake-head-down{
+.snake-tr-r90{
 	transform: rotate(90deg);
 	background-position: center center ;
-}*/
+}
 
-.snake {
-	background-image: url("/img/snake.png");
-	background-size: 100%;
+.snake-tr-r180{
+	transform: rotate(180deg);
+	background-position: center center ;
+}
+
+.snake-tr-r270{
+	transform: rotate(270deg);
+	background-position: center center ;
 }
 
 .snake-grow {
@@ -114,9 +61,12 @@
 .snake-victory-1 {
 	background: #396a31; /* Цвет фона клетки под курсором */
 }
-
 .snake-victory-2 {
 	background: #464e9b; /* Цвет фона клетки под курсором */
 }
 
 
+.snake {
+	background-image: url("/img/snake.png");
+	background-size: 100%;
+}

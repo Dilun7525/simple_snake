@@ -3,59 +3,70 @@
 * не поддерживается IE9
 * */
 'use strict';
-let ObgMAtrix = {
-    n: 10,          //размер матрицы
-    arrCell: [],    //координаты начала и конца
-    arrAllCell: [], //координаты всех ячеек
-    element: null,  //Объект с отслеживаемыми событиями
-}
-
+//region Aria variable
 const KEY_CODE = {
     LEFT: 37,
     UP: 38,
     RIGHT: 39,
     DOWN: 40
 };
+const ROT_HEAD = {
+    LEFT: 'snake-head snake-tr-h',
+    UP: 'snake-head snake-tr-r270',
+    RIGHT: 'snake-head snake-tr-r0',
+    DOWN: 'snake-head snake-tr-r90'
+};
+const ROT_NECK = {
+    RIGHT: 0,
+    LEFT: 1,
+    UP: 2,
+    DOWN: 3,
+    R_U: 'snake-neck snake-tr-r0',
+    R_D: 'snake-neck snake-tr-v',
+    L_U: 'snake-neck snake-tr-h',
+    L_D: 'snake-neck snake-tr-r180',
+    U_R: 'snake-neck snake-tr-r180',
+    U_L: 'snake-neck snake-tr-r270',
+    D_R: 'snake-neck snake-tr-h',
+    D_L: 'snake-neck snake-tr-r0',
+};
+const ROT_BODY = {
+    LEFT: 'snake-body snake-tr-h',
+    UP: 'snake-body snake-tr-r270',
+    RIGHT: 'snake-body snake-tr-r0',
+    DOWN: 'snake-body snake-tr-r90',
+};
 
-const ROTATE_HEAD = {
-    LEFT:    'snake-head snake-head-left',
-    UP:      'snake-head snake-head-up',
-    RIGHT:   'snake-head snake-head-right',
-    DOWN:    'snake-head snake-head-down'
-};
-const ROTATE_NECK = {
-    LEFT:    'snake-neck snake-neck-left',
-    UP:      'snake-neck snake-neck-up',
-    RIGHT:   'snake-neck snake-neck-right',
-    DOWN:    'snake-neck snake-neck-down',
-    DEFAULT: 'snake-neck',
-};
-const ROTATE_BODY = {
-    LEFT:    'snake-body snake-body-left',
-    UP:      'snake-body snake-body-up',
-    RIGHT:   'snake-body snake-body-right',
-    DOWN:    'snake-body snake-body-down',
-    DEFAULT: 'snake',
+let ObgMatrix = {
+    n: 20,          //размер матрицы
+    arrCell: [],    //координаты начала и конца
+    arrAllCell: [], //координаты всех ячеек
+    element: null   //Объект с отслеживаемыми событиями
 };
 
 let Snake = {
     arrBody: [],        //координаты тела змеи
     sizePlace: 0,       //размер свободного места
     cellGrow: null,     //ячейка роста змеи
-    speedSnake: 200,    //Скорость змея
+    speed: 200,         //Скорость змея
+    addSpeed: 50,       //Прирост скорости змея
     intervalMove: null, //относится к скорости
-    rotation: {
-        head: ROTATE_HEAD.RIGHT,
-        neck: ROTATE_NECK.DEFAULT,
-        body: ROTATE_BODY.DEFAULT,
+    rot: {              //повороты
+        head: ROT_HEAD.RIGHT,
+        neck: ROT_NECK.R_U,
+        neckBefore: ROT_NECK.RIGHT,
+        neckAfter: ROT_NECK.RIGHT,
+        body: ROT_BODY.RIGHT,
         bool: false,
-    },
-}
+    }
+};
 
+//endregion
+
+//region Create game field
 //Ширина браузера
 function widthClient(element) {
-    var widthVar = element.clientWidth; //размер с padding & border
-    return widthVar;
+    return element.clientWidth;
 }
 
 //Высота браузера
@@ -93,15 +104,15 @@ function minOrMax(a, b, operator) {
 // Создание матрицы.
 function createMatrix() {
 
-    let x = ObgMAtrix.n;
-    let y = ObgMAtrix.n;
+    let x = ObgMatrix.n;
+    let y = ObgMatrix.n;
     let borderSize = 4;
     let matrix = document.getElementById('matrix');
-    ObgMAtrix.element = matrix;
+    ObgMatrix.element = matrix;
     let sizeMatrix = minOrMax(widthClient(matrix), heightClient());
     matrix.style.width = sizeMatrix + "px";
     matrix.style.height = sizeMatrix + "px";
-    let sizeCell = (sizeMatrix - borderSize * 2) / ObgMAtrix.n;
+    let sizeCell = (sizeMatrix - borderSize * 2) / ObgMatrix.n;
 
 
     for (let iRow = 0; iRow < y; iRow++) {
@@ -146,7 +157,7 @@ function cellBeginEnd(divEvent) {
     divEvent.onmousedown = function (event) {
         let target = event.target;
         idElement = target.id;
-        ObgMAtrix.arrCell.push(idElement);
+        ObgMatrix.arrCell.push(idElement);
         if (!alternation) {
             target.className = 'cell-begin';
             alternation = true;
@@ -170,7 +181,9 @@ function cellBeginEnd(divEvent) {
     }
 }
 
+//endregion
 
+//region Game logic
 //Разность массивов
 function arrDiff(a1, a2) {
     let a = [], diff = [];
@@ -195,10 +208,51 @@ function arrDiff(a1, a2) {
 function rundomCell() {
     let arr = null;
     let idCell = null;
-    arr = arrDiff(ObgMAtrix.arrAllCell, Snake.arrBody);
+    arr = arrDiff(ObgMatrix.arrAllCell, Snake.arrBody);
     idCell = arr[Math.floor(Math.random() * arr.length)];
     Snake.sizePlace = arr.length;
     return idCell;
+}
+
+//Функция поворота тела
+function twistNeck() {
+    if (Snake.rot.neckBefore !== Snake.rot.neckAfter) {
+        switch (Snake.rot.neckBefore) {
+            case ROT_NECK.RIGHT:
+                if (Snake.rot.neckAfter === ROT_NECK.UP) {
+                    Snake.rot.neck = ROT_NECK.R_U;
+                }
+                if (Snake.rot.neckAfter === ROT_NECK.DOWN) {
+                    Snake.rot.neck = ROT_NECK.R_D;
+                }
+                break;
+            case ROT_NECK.LEFT:
+                if (Snake.rot.neckAfter === ROT_NECK.UP) {
+                    Snake.rot.neck = ROT_NECK.L_U;
+                }
+                if (Snake.rot.neckAfter === ROT_NECK.DOWN) {
+                    Snake.rot.neck = ROT_NECK.L_D;
+                }
+                break;
+            case ROT_NECK.UP:
+                if (Snake.rot.neckAfter === ROT_NECK.LEFT) {
+                    Snake.rot.neck = ROT_NECK.U_L;
+                }
+                if (Snake.rot.neckAfter === ROT_NECK.RIGHT) {
+                    Snake.rot.neck = ROT_NECK.U_R;
+                }
+                break;
+            case ROT_NECK.DOWN:
+                if (Snake.rot.neckAfter === ROT_NECK.LEFT) {
+                    Snake.rot.neck = ROT_NECK.D_L;
+                }
+                if (Snake.rot.neckAfter === ROT_NECK.RIGHT) {
+                    Snake.rot.neck = ROT_NECK.D_R;
+                }
+                break;
+        }
+    }
+    Snake.rot.neckBefore = Snake.rot.neckAfter;
 }
 
 //Рост змеи
@@ -210,16 +264,17 @@ function growSnake(str) {
     let head = Snake.arrBody.length - 1;
     div = document.getElementById(Snake.arrBody[head]);
     //Произошел поворот
-    if(Snake.rotation['bool']){
-        div.className = Snake.rotation['neck'];
-        Snake.rotation['bool']=false;
-    }else{
-        div.className = Snake.rotation['body'];
+    if (Snake.rot.bool) {
+        twistNeck();
+        div.className = Snake.rot.neck;
+        Snake.rot.bool = false;
+    } else {
+        div.className = Snake.rot.body;
     }
 
     Snake.arrBody.push(str);
     div = document.getElementById(Snake.arrBody[head + 1]);
-    div.className = Snake.rotation['head'];
+    div.className = Snake.rot.head;
 
 
     //Проверка достижения конца
@@ -281,7 +336,7 @@ function pathSnake(keyCode) {
     let arrCoordinates = cell.split('_');
     let x = arrCoordinates[0];
     let y = arrCoordinates[1];
-    let n = ObgMAtrix.n;
+    let n = ObgMatrix.n;
 
     if (Snake.intervalMove !== null) {
         clearInterval(Snake.intervalMove);
@@ -333,7 +388,7 @@ function pathSnake(keyCode) {
 
 
         },
-        Snake.speedSnake
+        Snake.speed
     );
 
 
@@ -341,34 +396,33 @@ function pathSnake(keyCode) {
 
 function handler(event) {
 
-
     switch (event.keyCode) {
         case KEY_CODE.RIGHT:
-            Snake.rotation['head'] = ROTATE_HEAD.RIGHT;
-            Snake.rotation['neck'] = ROTATE_NECK.RIGHT;
-            Snake.rotation['body'] = ROTATE_BODY.RIGHT;
-            Snake.rotation['bool'] = true;
+            Snake.rot.head = ROT_HEAD.RIGHT;
+            Snake.rot.neckAfter = ROT_NECK.RIGHT;
+            Snake.rot.body = ROT_BODY.RIGHT;
+            Snake.rot.bool = true;
             pathSnake(KEY_CODE.RIGHT);
             break;
         case KEY_CODE.LEFT:
-            Snake.rotation['head'] = ROTATE_HEAD.LEFT;
-            Snake.rotation['neck'] = ROTATE_NECK.LEFT;
-            Snake.rotation['body'] = ROTATE_BODY.LEFT;
-            Snake.rotation['bool'] = true;
+            Snake.rot['head'] = ROT_HEAD.LEFT;
+            Snake.rot.neckAfter = ROT_NECK.LEFT;
+            Snake.rot.body = ROT_BODY.LEFT;
+            Snake.rot.bool = true;
             pathSnake(KEY_CODE.LEFT);
             break;
         case KEY_CODE.UP:
-            Snake.rotation['head'] = ROTATE_HEAD.UP;
-            Snake.rotation['neck'] = ROTATE_NECK.UP;
-            Snake.rotation['body'] = ROTATE_BODY.UP;
-            Snake.rotation['bool'] = true;
+            Snake.rot['head'] = ROT_HEAD.UP;
+            Snake.rot.neckAfter = ROT_NECK.UP;
+            Snake.rot.body = ROT_BODY.UP;
+            Snake.rot.bool = true;
             pathSnake(KEY_CODE.UP);
             break;
         case KEY_CODE.DOWN:
-            Snake.rotation['head'] = ROTATE_HEAD.DOWN;
-            Snake.rotation['neck'] = ROTATE_NECK.DOWN;
-            Snake.rotation['body'] = ROTATE_BODY.DOWN;
-            Snake.rotation['bool'] = true;
+            Snake.rot['head'] = ROT_HEAD.DOWN;
+            Snake.rot.neckAfter = ROT_NECK.DOWN;
+            Snake.rot.body = ROT_BODY.DOWN;
+            Snake.rot.bool = true;
             pathSnake(KEY_CODE.DOWN);
             break;
     }
@@ -379,21 +433,21 @@ function game() {
     console.log("game run");
 
     // инициализация массива координат свободных ячеек
-    if (ObgMAtrix.arrAllCell.length === 0) {
-        let x = ObgMAtrix.n;
-        let y = ObgMAtrix.n;
+    if (ObgMatrix.arrAllCell.length === 0) {
+        let x = ObgMatrix.n;
+        let y = ObgMatrix.n;
         let strId = null;
         for (let iRow = 0; iRow < y; iRow++) {
             for (let iCol = 0; iCol < x; iCol++) {
                 strId = iCol + "_" + iRow;
-                ObgMAtrix.arrAllCell.push(strId);
+                ObgMatrix.arrAllCell.push(strId);
             }
         }
     }
     // инициализация массива тела змеи координатами начала пути
     if (Snake.arrBody.length === 0) {
         Snake.arrBody.push(rundomCell());
-        document.getElementById(Snake.arrBody[0]).className = ROTATE_HEAD.RIGHT;
+        document.getElementById(Snake.arrBody[0]).className = ROT_HEAD.RIGHT;
 
     }
     // инициализация первой клетки увеличения змеи
@@ -406,7 +460,7 @@ function game() {
     window.addEventListener('keydown', handler);
 }
 
-
+//endregion
 // Точка входа
 window.onload = function () {
     createMatrix();

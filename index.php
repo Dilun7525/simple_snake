@@ -17,7 +17,9 @@
 <div class="container">
 
 	<div class="row">
-		<div class="col-1"></div>
+		<div class="col-1 justify-content-center">
+
+		</div>
 		<div class="col justify-content-center">
 
 			<div id="matrix">
